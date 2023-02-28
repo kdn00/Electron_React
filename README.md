@@ -21,50 +21,43 @@ cd 프로젝트명
 
 #### 3. electron 모듈 설치
 ```bash
-npm install electron electron-builder concurrently wait-on cross-env --save-dev
+yarn add --dev electron electron-builder concurrently wait-on cross-env
 ```
-electron, electron-builder, concurrently, wait-on, cross-env 5가지 모듈을 설치합니다. (필요시 다른 모듈 추가로 설치)
-<br>
-**electron**
-- electron의 핵심 모듈
+- electron, electron-builder, concurrently, wait-on, cross-env 5가지 모듈을 설치합니다. (필요시 다른 모듈 추가로 설치)
+- 모듈들에 대한 설명은 아래와 같다.
 
-**electron-builder**
-- electron 앱을 실행 파일로 빌드해준다.(배포)
+**- electron :** electron의 핵심 모듈
+**- electron-builder :** electron 앱을 실행 파일로 빌드해준다.(배포)
+**- concurrently :** react와 electron을 동시에 실행할 수 있도록 해주는 모듈, 설치하지 않으면 react와 electron을 따로 실행해야 한다.
+**- wait-on :** electron과 react의 동작 순서를 제어하기 위한 모듈
+**- cross-env :** CLI 환경에서 환경변수 설정(특정 OS에 상관없이 환경변수를 적용함)
 
-**concurrently**
-- react와 electron을 동시에 실행할 수 있도록 해주는 모듈, 설치하지 않으면 react와 electron을 따로 실행해야 한다.
-
-**wait-on**
-- electron과 react의 동작 순서를 제어하기 위한 모듈
-
-**cross-env**
-- CLI 환경에서 환경변수 설정(특정 OS에 상관없이 환경변수를 적용함)
-
-#### 4. package.json의 "scripts"에 다음 코드 추가
-```json
+#### 4. package.json의 "scripts"에 다음 코드 추가 --> concurrently 적용 동시 실행이 오류남, 해결중 
+```javascript
+..., 
 "scripts": {
   "start": "react-scripts start",
   "build": "react-scripts build",
   "test": "react-scripts test",
   "eject": "react-scripts eject",
   "electron": "electron ."
-  //...
+  ...
 },
 ```
 
 #### 5. package.json의 최상위에 다음 코드를 추가한다.
-```json
+```javascript
 {
   "main": "public/main.js",
   "homepage": "./",
-  //...
+  ...
 }
 ```
 
 #### 6. IPC 통신을 위한 모듈 설치
 - IPC 통신 : 프로세스 간 통신(Inter Process Communication)으로 프로세스들 사이에 서로 데이터를 주고 받는 행위 또는 그에 대한 방법이나 경로를 뜻한다.
 ```bash
-npm add @electron/remote
+yarn add @electron/remote
 ```
 
 #### 7. public폴더에 main.js 파일을 생성한 후 아래 코드를 적용합니다.
@@ -91,12 +84,18 @@ function createWindow() {
         enableRemoteModule: true
     },
   });
-  win.loadURL('http://localhost:3000') //생성한 창에 url 실행, url 없으면 index.html
+
+  // 로드할 서버 링크
+  win.loadURL('http://localhost:3000')
   remote.enable(win.webContents);
 }
 
+// Electron의 초기화가 끝나면 실행되며 브라우저 윈도우를 생성할 수 있다.
+// 몇몇 API는 이 이벤트 이후에만사용할 수 있다.
 app.on('ready', createWindow)
- 
+
+// window들이 모두 닫혔을 때 발생하는 이벤트
+// Mac의 경우 종료를 해도 최소화 상태가 된 것처럼 만들 수 있다.
 app.on('window-all-closed', function() {
     if(process.platform !== 'darwin') {
         app.quit()
@@ -104,21 +103,25 @@ app.on('window-all-closed', function() {
 })
  
 app.on('activate', function() {
+    // 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
     if(BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 ```
 
 #### 8. React & Electron 실행
 ```bash
-npm electron:serve
+# 둘 다 같이 실행되는 부분이 오류남. 더 찾아보기
+yarn start
+yarn electron
+
+# 원래는 yarn start 하나만 입력하면 react, electron 전부 실행되게 만들어야함.
 ```
-
-
-
 
 ### 번외. Electron BrowserWindow 옵션
 ---
-- [문법 사용 파일 참고](https://github.com/kdn00/Electron_React/blob/main/react_study/public/main.js)
+- [문법 사용 파일 참고](https://github.com/kdn00/Electron_React#7-public%ED%8F%B4%EB%8D%94%EC%97%90-mainjs-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EC%83%9D%EC%84%B1%ED%95%9C-%ED%9B%84-%EC%95%84%EB%9E%98-%EC%BD%94%EB%93%9C%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%A9%EB%8B%88%EB%8B%A4)
+<br>
+
 **width, height**
 - 윈도우의 기본 너비, 높이를 지정하는 옵션
 
@@ -157,6 +160,12 @@ npm electron:serve
 **그 외의 옵션 확인 : https://www.electronjs.org/docs/latest/api/browser-window**
 
 <!-- 
+electron 문서 참고
+- https://tinydew4.gitbooks.io/electron-ko/content/tutorial/quick-start.html
+
+electron 공식 문서
+- https://www.electronjs.org/docs/latest/api/browser-window
+
 글 작성 참고
 - https://developer-talk.tistory.com/335
 
@@ -177,11 +186,11 @@ npm electron:serve
 ---
 #### 1. 배포 라이브러리 설치
 ```
-npm install --save-dev electron-builder
+yarn add --save-dev electron-builder
 ```
 
 #### 2. package.json에 설정 값 추가
-```json
+```javascript
 {
   "name": "프로젝트이름",
   "version": "1.0.0",

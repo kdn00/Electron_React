@@ -1,0 +1,182 @@
+.App-body {
+    box-sizing: border-box;
+    position: relative;
+    width: 1440px;
+    height: 901px;
+    background: #437DD5;
+    border-radius: 5px;
+  }
+  .program-name{
+    position: absolute;
+    width: 602px;
+    height: 122px;
+    left: 780px;
+    top: 209px;
+  
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 50px;
+    line-height: 61px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+  
+    color: #FFFFFF;
+  }
+  .logo-size{
+    position: absolute;
+    width: 292px;
+    height: 167px;
+    left: 674px;
+    top: 135px;
+  
+    background: rgba(91, 157, 255, 0.7);
+    border-radius: 5px;
+  }
+  .login-box {
+    position: absolute;
+    width: 708px;
+    height: 447px;
+    left: 643px;
+    top: 349px;
+  
+    background: #E2E7F0;
+    border-radius: 10px;
+  }
+.BigBlue-Btn{
+    position: absolute;
+    height: 60px;
+    width: 593px;
+    background: #5B9DFF;
+    border-radius: 5px;
+    border:none;
+}
+.BigBlue-Btn:hover{
+    background-color: #222F9E;
+}
+
+.Btn-font{
+    position: absolute;
+    left: 41.82%;
+    bottom: 25%;
+    
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+
+    color: #FFFFFF;
+}
+
+
+.Box{
+    box-sizing: border-box;
+    position: absolute;
+    left: 58px;
+    height: 60px;
+    width: 593px;
+    font-weight: 700;
+    font-size: 17px;
+
+    background: #FFFFFF;
+    border: 1px solid #B7BDC7;
+    border-radius: 5px;
+}
+.Box::placeholder{
+    position: absolute;
+    left: 10.79%;
+    top: 33.33%;
+    bottom: 31.67%;
+  
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 17px;
+    /* identical to box height */
+  
+    display: flex;
+    align-items: center;
+  
+    color: #B7BDC7;
+}
+.agencyNumber-Box{
+    top: 38px;
+  }
+.id-Box{
+    top: 118px;
+}
+.password-Box{
+    top: 198px;
+}
+
+.checkBox{
+    height: 24px;
+    width: 24px;
+    top: 275px;
+    box-sizing: border-box;
+    position: absolute;
+    
+    border: 1px solid #B7BDC7;
+    border-radius: 5px;
+}
+.checkText{  
+    position: absolute;
+    top: 62%;
+    font-size: 17px;
+}
+.agency-check{
+    left: 76px;
+}
+.agency-checkText{
+    left: 112px;
+}
+.id-check{
+    left: 265px;
+}
+.id-checkText{
+    left: 299px;
+}
+.login-check{
+    left: 436px;
+}
+.login-checkText{
+    left: 470px;
+}
+
+.login-btn{
+    left: 58px;
+    top: 322px;
+}
+
+.middle-Box{
+    position: absolute;
+    left: 47.72%;
+    right: 51.77%;
+    top: 90.37%;
+    bottom: 3%;
+
+    background: #c0c0c0;
+}
+
+.middle-font{
+    text-decoration: none;
+    position: absolute;
+    top: 90.64%;
+    font-family: 'Inter';
+    font-weight: 700;
+    font-size: 17px;
+
+    display: flex;
+    align-items: center;
+
+    color: #171717;
+}
+.join-font{
+    left: 20.4%;
+}
+.find-font{
+    left: 58.92%;
+}
