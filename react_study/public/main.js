@@ -21,7 +21,8 @@ function createWindow() {
         enableRemoteModule: true
     },
   });
-  // 브라우저창이 읽어올 링크
+  
+  // 로드할 서버 링크
   win.loadURL('http://localhost:3000')
   remote.enable(win.webContents)
 }
@@ -31,7 +32,8 @@ function createWindow() {
 app.on('ready', createWindow)
  
 
-// 윈도우창이 전부 꺼지면 발생하는 이벤트
+// window들이 모두 닫혔을 때 발생하는 이벤트
+// Mac의 경우 종료를 해도 최소화 상태가 된 것처럼 만들 수 있다.
 app.on('window-all-closed', function() {
   // 모든 창이 꺼지면 어플리케이션 종료
     if(process.platform !== 'darwin') {
@@ -39,7 +41,8 @@ app.on('window-all-closed', function() {
     }
 })
 
-// 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
+
 app.on('activate', function() {
+    // 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
     if(BrowserWindow.getAllWindows().length === 0) createWindow()
 })

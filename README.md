@@ -2,13 +2,34 @@
 ### React-Electron 실행하기 위한 환경설정
 ---
 **우선 아래 프로그램들을 설치해야 한다.**
-node.js
-npm (혹은 yarn)
+1. node.js
+2. npm (혹은 yarn)
 - yarn이 npm보다 속도나 보안이 좋다고 했었으나, npm이 5.0 버전으로 업데이트 하면서 거의 차이가 없어졌다.
 - 취향껏 yarn이나 npm 쓰면 됨
-FrontEnd 개발 툴(별도로 사용하던 툴이 없다면 VSCode 권장)
-그 외 개발환경에 필요한 권한 설정 등
-   
+3. FrontEnd 개발 툴(별도로 사용하던 툴이 없다면 VSCode 권장)
+4. 그 외 개발환경에 필요한 권한 설정 등
+
+#### 설치 명령어
+---
+패키지 전역 설치
+```shell
+npm i -g <package-name>
+yarn add global <package-name>
+```
+
+dependancy에 패키지 설치
+```shell
+npm i <package-name>
+yarn add <package-name>
+```
+
+devDependancy에 패키지 설치
+```shell
+npm i <package-name> --save-dev
+yarn add <package-name> --dev
+```
+- 패키지를 설치할 때 yarn install --production을 입력하거나 환경변수가 NODE_ENV=production 이면 dependancy에 있는 패키지만 설치해서 빌드 결과물 크기를 최적화할 수 있다.
+- 그래서 프로젝트에 꼭 필요한 패키지만 dependancy로 설치하고, typescript나 eslint 등 빌드 파일 실행에 필요하지 않는 패키지는 devDependancy로 설치한다.
 #### 1. react 프로젝트를 생성
 ```
 npx create-react-app 프로젝트명
@@ -21,15 +42,23 @@ cd 프로젝트명
 
 #### 3. electron 모듈 설치
 ```bash
-yarn add --dev electron electron-builder concurrently wait-on cross-env
+yarn add electron electron-builder concurrently wait-on cross-env --dev
 ```
 - electron, electron-builder, concurrently, wait-on, cross-env 5가지 모듈을 설치합니다. (필요시 다른 모듈 추가로 설치)
 - 모듈들에 대한 설명은 아래와 같다.
 
 **- electron :** electron의 핵심 모듈
+<br>
+
 **- electron-builder :** electron 앱을 실행 파일로 빌드해준다.(배포)
+<br>
+
 **- concurrently :** react와 electron을 동시에 실행할 수 있도록 해주는 모듈, 설치하지 않으면 react와 electron을 따로 실행해야 한다.
+<br>
+
 **- wait-on :** electron과 react의 동작 순서를 제어하기 위한 모듈
+<br>
+
 **- cross-env :** CLI 환경에서 환경변수 설정(특정 OS에 상관없이 환경변수를 적용함)
 
 #### 4. package.json의 "scripts"에 다음 코드 추가 --> concurrently 적용 동시 실행이 오류남, 해결중 
@@ -69,14 +98,15 @@ remote.initialize()
 function createWindow() {
   const win = new BrowserWindow({
     // 윈도우의 기본 너비, 높이를 지정하는 옵션
-    width:1600,
-    height:900,
+    width:1457,
+    height:940,
     
     // 윈도우의 크기를 조절 허용 여부를 지정하는 옵션, 기본값은 true
     // resizable: true
 
     // 앱 실행 시 윈도우를 화면 정 중앙에 위치시키는 옵션
     center: true,
+    autoHideMenuBar: true,
     // Electron 웹 환경설정을 하는 옵션
     webPreferences: {
         // Electron 내부에 Node.js를 통합할 것인지 설정하는 옵션
@@ -84,24 +114,27 @@ function createWindow() {
         enableRemoteModule: true
     },
   });
-
+  
   // 로드할 서버 링크
   win.loadURL('http://localhost:3000')
-  remote.enable(win.webContents);
+  remote.enable(win.webContents)
 }
 
 // Electron의 초기화가 끝나면 실행되며 브라우저 윈도우를 생성할 수 있다.
-// 몇몇 API는 이 이벤트 이후에만사용할 수 있다.
+// 몇몇 API는 이 이벤트 이후에만 사용할 수 있다.
 app.on('ready', createWindow)
+ 
 
 // window들이 모두 닫혔을 때 발생하는 이벤트
 // Mac의 경우 종료를 해도 최소화 상태가 된 것처럼 만들 수 있다.
 app.on('window-all-closed', function() {
+  // 모든 창이 꺼지면 어플리케이션 종료
     if(process.platform !== 'darwin') {
         app.quit()
     }
 })
- 
+
+
 app.on('activate', function() {
     // 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
     if(BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -111,10 +144,9 @@ app.on('activate', function() {
 #### 8. React & Electron 실행
 ```bash
 # 둘 다 같이 실행되는 부분이 오류남. 더 찾아보기
+# 원래는 yarn start 하나만 입력하면 react, electron 전부 실행되게 만들어야함.
 yarn start
 yarn electron
-
-# 원래는 yarn start 하나만 입력하면 react, electron 전부 실행되게 만들어야함.
 ```
 
 ### 번외. Electron BrowserWindow 옵션
@@ -157,7 +189,7 @@ yarn electron
 - 그 중 nodeIntegration 옵션이 있는데 Electron 내부에 Node.js를 통합할 것인지 설정하는 옵션이므로, 만약 Electron 내부에서 Node 기반 라이브러리를 사용한다면, 꼭 true로 설정해야한다.
 - 기본값은 false
 
-**그 외의 옵션 확인 : https://www.electronjs.org/docs/latest/api/browser-window**
+**그 외의 옵션 확인(공식 문서) : https://www.electronjs.org/docs/latest/api/browser-window**
 
 <!-- 
 electron 문서 참고
@@ -193,7 +225,7 @@ yarn add --save-dev electron-builder
 ```javascript
 {
   "name": "프로젝트이름",
-  "version": "1.0.0",
+  "version": "1.0.0", // 어플리케이션 버전
   "description": "본인 일렉트론 앱 설명",
   "main": "main.js",
   "scripts": {
@@ -217,13 +249,16 @@ yarn add --save-dev electron-builder
       "icon": "패키징 파일 이미지 경로"
     },
     "nsis": {
-        "oneClick": true, // 원 클릭 설치 프로그램 여부
-        "allowToChangeInstallationDirectory": true, // 설치 디렉토리 변경 여부
-        "createDesktopShortcut": true, // 바탕화면에 바로가기 추가 여부
+        "oneClick": true, // 원 클릭 설치 프로그램 설정
+        "allowToChangeInstallationDirectory": true, // 사용자가 설치 디렉토리를 변경하도록 허용할지에 대한 설정
+        "createDesktopShortcut": true, // 바탕화면에 바로가기 추가 설정
         "language": 1042, // 설치 프로그램 언어 : 한국어는 1042
         "shortcutName": "바로가기 이름",
         "artifactName": "배포 파일 이름",
         "uninstallDisplayName": "제어판>>프로그램>>프로그램 및 기능에 표시되는 이름"
+    },
+    "directories": {
+      "output": "빌드를 끝낸 파일을 생성할 경로" // 별도로 지정하지 않으면 dist 디렉토리에 저장된다.
     }
   },
 }
