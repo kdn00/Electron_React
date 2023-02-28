@@ -28,10 +28,10 @@ function App() {
         </button>
 
         <div>
-            <a className='middle-font join-font' href='./Join/join.js'>회원가입</a>
+            <a className='middle-font join-font'>회원가입</a>
             <div className='middle-Box'/>
             <a>
-            <a className='middle-font find-font' href=''>아이디/비밀번호 찾기</a>
+            <a className='middle-font find-font'>아이디/비밀번호 찾기</a>
             </a>
 
         </div>

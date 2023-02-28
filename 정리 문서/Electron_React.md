@@ -1,5 +1,5 @@
 # Electron_React
-### React-Electron 실행하기 위한 환경설정
+### React-Electron 실행하기 위한 환경설정 준비
 ---
 **우선 아래 프로그램들을 설치해야 한다.**
 1. node.js
@@ -13,23 +13,25 @@
 ---
 패키지 전역 설치
 ```shell
-npm i -g <package-name>
-yarn add global <package-name>
+npm i -g 패키지명
+yarn add global 패키지명
 ```
 
-dependancy에 패키지 설치
+dependancy에 패키지 설치(패키지를 프로젝트 의존성으로 추가)
 ```shell
-npm i <package-name>
-yarn add <package-name>
+npm i 패키지명
+yarn add 패키지명
 ```
 
-devDependancy에 패키지 설치
+devDependancy에 패키지 설치(패키지를 프로젝트 개발 의존성 수준으로 추가)
 ```shell
-npm i <package-name> --save-dev
-yarn add <package-name> --dev
+npm i --save-dev 패키지명 
+yarn add --dev 패키지명 
 ```
 - 패키지를 설치할 때 yarn install --production을 입력하거나 환경변수가 NODE_ENV=production 이면 dependancy에 있는 패키지만 설치해서 빌드 결과물 크기를 최적화할 수 있다.
 - 그래서 프로젝트에 꼭 필요한 패키지만 dependancy로 설치하고, typescript나 eslint 등 빌드 파일 실행에 필요하지 않는 패키지는 devDependancy로 설치한다.
+### React-Electron 실행하기 위한 환경설정
+---
 #### 1. react 프로젝트를 생성
 ```
 npx create-react-app 프로젝트명
@@ -42,9 +44,9 @@ cd 프로젝트명
 
 #### 3. electron 모듈 설치
 ```bash
-yarn add electron electron-builder concurrently wait-on cross-env --dev
+yarn add --dev electron electron-builder concurrently wait-on cross-env
 ```
-- electron, electron-builder, concurrently, wait-on, cross-env 5가지 모듈을 설치합니다. (필요시 다른 모듈 추가로 설치)
+- electron, electron-builder, concurrently, wait-on, cross-env 5가지 모듈을 설치(필요시 다른 모듈 추가로 설치)
 - 모듈들에 대한 설명은 아래와 같다.
 
 **- electron :** electron의 핵심 모듈
@@ -64,14 +66,14 @@ yarn add electron electron-builder concurrently wait-on cross-env --dev
 #### 4. package.json의 "scripts"에 다음 코드 추가 --> concurrently 적용 동시 실행이 오류남, 해결중 
 ```javascript
 ..., 
-"scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "electron": "electron ."
+  "scripts": {
+    "start": "concurrently \"yarn react-scripts start\" \"yarn electron\" ",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron": "electron ."
+  },
   ...
-},
 ```
 
 #### 5. package.json의 최상위에 다음 코드를 추가한다.
@@ -143,10 +145,7 @@ app.on('activate', function() {
 
 #### 8. React & Electron 실행
 ```bash
-# 둘 다 같이 실행되는 부분이 오류남. 더 찾아보기
-# 원래는 yarn start 하나만 입력하면 react, electron 전부 실행되게 만들어야함.
 yarn start
-yarn electron
 ```
 
 ### 번외. Electron BrowserWindow 옵션
@@ -214,11 +213,12 @@ electron 공식 문서
 - https://pks2974.medium.com/electron-%EC%97%90-react-%EC%A0%81%EC%9A%A9%ED%95%B4-%EB%B3%B4%EA%B8%B0-ebcea2bbbd27 이거 꼭 나도 참고!!! -->
 
 
-### 배포하기
+### 배포하기 --> 아직 확인 중
 ---
 #### 1. 배포 라이브러리 설치
-```
-yarn add --save-dev electron-builder
+```shell
+# 위에서 설치 했음, 배포하려면 설치해야하는 패키지라고 보고 가면 됨
+yarn add --dev electron-builder
 ```
 
 #### 2. package.json에 설정 값 추가
