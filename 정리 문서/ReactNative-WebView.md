@@ -1,33 +1,6 @@
-### react-native 프로젝트 및 웹 뷰 라이브러리 설치
----
-```shell
-# 프로젝트 생성
-npx react-native init project-name
-
-# 실행
-npx react-native run-ios
-
-# npm 다운로드시 해야하는 설정
-npm install react-native-webview
-
-# already link 확인
-react-native link react-native-webview
-
-# RNCWebview not found 같이 node_module을 못읽는 에러 발생시 ios node_module 설치 안했기 때문
-cd ios
-pod install
-
-# 위 명령어 실행 후 재시작하면 에러가 안뜬다
-npx react-native run-ios
-
-# pod not found 에러시
-sudo gem cocopod
-pod install
-```
-
 ### rn에 webview 추가하기
 ---
-- 이후 firebase cloud message를 추가합니다.
+- firebase cloud message를 추가합니다.
 - fcm은 프로젝트의 가장 최상단(App.js)에 위치해야합니다.
 - 그러므로 webview는 App.js의 하위 컴포넌트에서 구성합니다.
 ```javascript
@@ -83,7 +56,6 @@ const WebviewContainer = ({ handleSetRef, handleEndLoading }) => {
 };
 ```
 
-
 ### 웹뷰에서 rn으로 데이터 송신
 ---
 - 웹뷰 → react-native으로 데이터를 보내는 예시입니다.
@@ -118,3 +90,60 @@ const handleOnMessage = ({ nativeEvent: { data } }) => {
 - react-native → webview로 데이터를 보내는 예시입니다.
 - rn에서는 ```webviewRef.postMessage({type: TOKEN, data: xxxxx});```를 이용하여 webview로 데이터를 전송합니다.
 - 위 함수를 이용해 전송하면 웹뷰에서는 웹뷰 프로젝트의 최상단에 rn 정보를 listen한다는 함수를 실행합니다. react-router를 사용한 예시는 아래와 같습니다.
+
+```javascript
+// routes.js
+export default function Routes() {
+  return (
+    <Router>
+      <RNListener>
+      <Switch>
+        ...
+      </Switch>
+    </Router>
+  )
+}
+```
+
+- 위처럼 어느 라우트에서든 RNListener가 실행되도록 만들어줍니다.
+- 다음으로는 RNListener입니다. rn에서 ```webviewRef.postMessage({type: TOKEN, data: xxxxx});```으로 전송을 보냈다고 가정하면
+```javascript
+const RNListener = () => {
+  /** react native 환경에서만 가능 */
+  const listener = event => {
+    const { data, type } = JSON.parse(event.data);
+    if (type === "TOKEN") {
+      // type이 TOKEN이기 때문에 이곳에 콘솔이 찍히게 됩니다.
+      console.log(data) // xxxxx
+      ...
+    } else if (type === "NOTIFICATION") {
+      ...
+    }
+  };
+
+  if (window.ReactNativeWebView) {
+    /** android */
+    document.addEventListener("message", listener);
+    /** ios */
+    window.addEventListener("message", listener);
+  } else {
+    // 모바일이 아니라면 모바일 아님을 alert로 띄웁니다.
+    alert({ message: ERROR_TYPES.notMobile });
+  }
+};
+```
+
+**주의사항 : rn을 듣는 listener함수가 android와 ios가 다름을 인지하고 확실히 분기처리 해야합니다.**
+
+### rn 모듈 설치 시
+---
+- 모듈을 설치했다면 프로젝트와 연결해야한다.
+```shell
+# 예시
+# 1. 설치
+npm install react-native-send-intent --save
+yarn add react-native-send-intent
+
+# 2. 프로젝트와 연결
+react-native link react-native-send-intent
+```
