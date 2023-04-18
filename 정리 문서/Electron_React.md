@@ -299,3 +299,5 @@ npm run deploy:win64 # Windows 64bit
 - win.webContents.printToPDF() 메서드를 사용하여 PDF 파일을 생성합니다.
 - 그리고 PDF 파일을 미리보기 할 새로운 브라우저 창을 열고, 해당 창에서 `data:application/pdf;base64` URL을 사용하여 생성된 PDF 파일을 로드
 - 미리보기용 브라우저 창을 닫을 때는 `previewWindow.close()`를 호출한다.
+
+### 기능이 가끔 먹통이 되는 이유 
