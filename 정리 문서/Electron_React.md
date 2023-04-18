@@ -280,3 +280,10 @@ npm run deploy:win   # Windows 32bit & 64bit
 npm run deploy:win32 # Windows 32bit
 npm run deploy:win64 # Windows 64bit
 ```
+
+---
+
+# 그 외 정리
+### Electron 배포시 라우팅 문제
+- Electron으로 배포 시 경로가 파일형태로 변경되어 BrowserRouter로는 에러가 발생함(개발할 때는 react 서버와 동시에 켜놓기 때문에 에러가 발생하지 않음)
+- 따라서 HashRouter로 변경해야 함(또는 상대 경로를 찾아주는 라이브러리 찾아보기)
