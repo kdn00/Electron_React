@@ -287,3 +287,15 @@ npm run deploy:win64 # Windows 64bit
 ### Electron 배포시 라우팅 문제
 - Electron으로 배포 시 경로가 파일형태로 변경되어 BrowserRouter로는 에러가 발생함(개발할 때는 react 서버와 동시에 켜놓기 때문에 에러가 발생하지 않음)
 - 따라서 HashRouter로 변경해야 함(또는 상대 경로를 찾아주는 라이브러리 찾아보기)
+
+#### 해결방법
+- 찾는 중
+
+### 프린트 미리보기가 안 되는 문제
+- react에서는 프린트 하기 전에 출력 문서 미리보기가 자동으로 되지만, electron에서는 따로 설정을 해줘야한다.
+- 더 조사해보기
+
+#### 해결방법
+- win.webContents.printToPDF() 메서드를 사용하여 PDF 파일을 생성합니다.
+- 그리고 PDF 파일을 미리보기 할 새로운 브라우저 창을 열고, 해당 창에서 `data:application/pdf;base64` URL을 사용하여 생성된 PDF 파일을 로드
+- 미리보기용 브라우저 창을 닫을 때는 `previewWindow.close()`를 호출한다.
