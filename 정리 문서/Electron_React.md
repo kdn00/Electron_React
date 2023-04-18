@@ -91,56 +91,63 @@ yarn add --dev electron electron-builder concurrently wait-on cross-env
 yarn add @electron/remote
 ```
 
-#### 7. public폴더에 main.js 파일을 생성한 후 아래 코드를 적용합니다.
+#### 7. public폴더에 main.js(또는 electron.js) 파일을 생성한 후 아래 코드를 적용합니다.
 ```javascript
-const {app, BrowserWindow} = require('electron')
-const remote = require('@electron/remote/main')
-remote.initialize()
+const { app, BrowserWindow, contextBridge, ipcRenderer } = require('electron');
 
 function createWindow() {
   const win = new BrowserWindow({
     // 윈도우의 기본 너비, 높이를 지정하는 옵션
-    width:1457,
-    height:940,
-    
-    // 윈도우의 크기를 조절 허용 여부를 지정하는 옵션, 기본값은 true
-    // resizable: true
+    width: 1457,
+    height: 940,
 
     // 앱 실행 시 윈도우를 화면 정 중앙에 위치시키는 옵션
     center: true,
     autoHideMenuBar: true,
     // Electron 웹 환경설정을 하는 옵션
     webPreferences: {
-        // Electron 내부에 Node.js를 통합할 것인지 설정하는 옵션
-        nodeIntegration: true,
-        enableRemoteModule: true
+      // true 설정시 렌더러 프로세스에서 Node.js API를 사용할 수 있음
+      nodeIntegration: true,
+    }
+  });
+
+  // 로드할 URL
+  win.loadURL('http://localhost:3000');
+
+
+  // 웹 컨텐츠에서 사용할 API
+  // contextBridge : renderer process에서 main process로의 접근을 보호
+  contextBridge.exposeInMainWorld("api", {
+    // IPC 통신을 통해 renderer process와 통신할 수 있게 함
+    // send 함수는 renderer process에서 main process로 데이터를 보낼 때 사용
+    send: (channel, data) => {
+      ipcRenderer.send(channel, data);
+    },
+    // receive 함수는 main process에서 renderer process로 데이터를 받을 때 사용
+    receive: (channel, func) => {
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
     },
   });
-  
-  // 로드할 서버 링크
-  win.loadURL('http://localhost:3000')
-  remote.enable(win.webContents)
 }
 
 // Electron의 초기화가 끝나면 실행되며 브라우저 윈도우를 생성할 수 있다.
 // 몇몇 API는 이 이벤트 이후에만 사용할 수 있다.
-app.on('ready', createWindow)
- 
+app.whenReady().then(createWindow);
 
 // window들이 모두 닫혔을 때 발생하는 이벤트
 // Mac의 경우 종료를 해도 최소화 상태가 된 것처럼 만들 수 있다.
 app.on('window-all-closed', function() {
   // 모든 창이 꺼지면 어플리케이션 종료
-    if(process.platform !== 'darwin') {
-        app.quit()
-    }
-})
-
+  if(process.platform !== 'darwin') {
+    app.quit();
+  }
+});
 
 app.on('activate', function() {
-    // 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
-    if(BrowserWindow.getAllWindows().length === 0) createWindow()
-})
+  // 열린 윈도우가 없으면, 새로운 윈도우를 다시 만듭니다.
+  if(BrowserWindow.getAllWindows().length === 0) createWindow();
+});
+
 ```
 
 #### 8. React & Electron 실행
